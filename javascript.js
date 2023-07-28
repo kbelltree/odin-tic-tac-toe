@@ -141,7 +141,7 @@ const GameController = (() => {
             alert(`${playerName} Win! Play Again?`);
             console.log(`Winning Combo: ${GameBoard.getWinningCombination()}`);  
             setTimeout(resetGame(), 5000);
-        } else if (!isThereWinner && GameBoard.isAllMarked === true) {
+        } else if (!isThereWinner && GameBoard.isAllMarked()) {
             alert(`It's a Tie! Play Again?`);
             setTimeout(resetGame(), 5000);
         }
@@ -181,5 +181,5 @@ const GameController = (() => {
     return { resetGame, advanceGame, getPlayer: () => currentPlayer };
 })(); 
 
-// gameController.resetGame();
-// gameController.advanceGame(gameController.getPlayer());
+// GameController.resetGame();
+// GameController.advanceGame(gameController.getPlayer());
