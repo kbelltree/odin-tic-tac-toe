@@ -69,15 +69,45 @@ const GameBoard = (() => {
         }       
     }
 
+    const getMarkToDisplay = (index) => {
+        return gameBoard[index];
+    }
+
     const isAllMarked = () => {
         return gameBoard.indexOf(null) === -1;
     }
 
     const getWinningCombination = () => {
-        return winningCombination; 
+        return winningCombination;
     }
 
-    return { resetBoard, makeMove, isAllMarked, getWinningCombination };
+    return { resetBoard, makeMove, isAllMarked, getWinningCombination, getMarkToDisplay };
+})();
+
+// Module for UI 
+const DisplayController = (() => {
+    "use strict";
+
+    // method for displaying the latest entry of gameBoard array on click 
+    const displayMark = (index) => {
+        const cell = document.querySelector(`[data-index='${index}']`);
+        cell.textContent = GameBoard.getMarkToDisplay(index);
+    }
+
+    // method for passing the index number the current player marked on click 
+    const getIndexNumber = (e) => {
+        return e.target.dataset.index; 
+    }
+
+    // method for adding eventListener that is attached to all .cell class
+    const addCellListener = (method) => {
+        const cells = document.querySelectorAll(".cell");
+        cells.forEach(cell => {
+            cell.addEventListener("click", method, {once : true});
+        });
+    }
+    
+    return { displayMark, getIndexNumber, addCellListener }
 })();
 
 // Module to monitor all game flow 
@@ -140,10 +170,10 @@ const GameController = (() => {
         // TODO: add a method that shows replay button 
             alert(`${playerName} Win! Play Again?`);
             console.log(`Winning Combo: ${GameBoard.getWinningCombination()}`);  
-            setTimeout(resetGame(), 5000);
+            setTimeout(_resetGame(), 5000);
         } else if (!isThereWinner && GameBoard.isAllMarked()) {
             alert(`It's a Tie! Play Again?`);
-            setTimeout(resetGame(), 5000);
+            setTimeout(_resetGame(), 5000);
         }
     }
 
@@ -152,34 +182,43 @@ const GameController = (() => {
         playerO = undefined; 
     }
 
-    const resetGame = () => {
+    const _resetGame = () => {
         isThereWinner = false; 
         GameBoard.resetBoard();
         _clearPlayers(); 
         _initializePlayers();
         currentPlayer = playerX;
-        console.log("currentPlayer: " + currentPlayer);
+        console.log("currentPlayer: " + currentPlayer);    
     }
 
-    const advanceGame = (currentPlayerObj) => {
-        const playerMark = currentPlayerObj.getMark();
-        const playerName = currentPlayerObj.getName();
+    const _advanceGame = (e) => {
+        console.log(`Event: ${e}`);
+        const playerMark = currentPlayer.getMark();
+        const playerName = currentPlayer.getName();
+        const indexNumber = parseInt(DisplayController.getIndexNumber(e), 10);
 
         console.log(`Player Name: ${playerName} Mark: ${playerMark} `);
 
-        const moveResult = _getValidMove(playerMark);
+        // const moveResult = _getValidMove(playerMark);
+
+        const moveResult = GameBoard.makeMove(indexNumber, playerMark);
        
         console.log(`result: ${moveResult}`);
         
+        DisplayController.displayMark(indexNumber);
         _updateGameStatus(moveResult);  
         _switchPlayerTurn();
 
         console.log(`game over? ${isThereWinner}`);
         _callGameOver(playerName);     
     }
+
+    _resetGame()
+    DisplayController.addCellListener(_advanceGame);
  
-    return { resetGame, advanceGame, getPlayer: () => currentPlayer };
 })(); 
+
+
 
 // GameController.resetGame();
 // GameController.advanceGame(gameController.getPlayer());
