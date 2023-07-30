@@ -106,8 +106,14 @@ const DisplayController = (() => {
             cell.addEventListener("click", method, {once : true});
         });
     }
+
+    // method for adding eventListener to start/refresh button 
+    const addButtonListener = (method) => {
+        const button = document.querySelector("#start-btn");
+        button.addEventListener("click", method); 
+    }
     
-    return { displayMark, getIndexNumber, addCellListener }
+    return { displayMark, getIndexNumber, addCellListener, addButtonListener }
 })();
 
 // Module to monitor all game flow 
@@ -168,13 +174,15 @@ const GameController = (() => {
     const _callGameOver = (playerName) => {
         if (isThereWinner) {
         // TODO: add a method that shows replay button 
-            alert(`${playerName} Win! Play Again?`);
-            console.log(`Winning Combo: ${GameBoard.getWinningCombination()}`);  
-            setTimeout(_resetGame(), 5000);
+            alert(`${playerName} Win!`);
+            console.log(`Winning Combo: ${GameBoard.getWinningCombination()}`); 
         } else if (!isThereWinner && GameBoard.isAllMarked()) {
-            alert(`It's a Tie! Play Again?`);
-            setTimeout(_resetGame(), 5000);
+            alert(`It's a Tie!`);
         }
+    }
+
+    const _reloadPage = () => {
+        window.location.reload();
     }
 
     const _clearPlayers = () => {
@@ -213,7 +221,8 @@ const GameController = (() => {
         _callGameOver(playerName);     
     }
 
-    _resetGame()
+    _resetGame();
+    DisplayController.addButtonListener(_reloadPage);
     DisplayController.addCellListener(_advanceGame);
  
 })(); 
