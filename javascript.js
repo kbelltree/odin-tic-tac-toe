@@ -88,6 +88,13 @@ const GameBoard = (() => {
 const DisplayController = (() => {
     "use strict";
 
+    const displayNames = (nameForX, nameForO) => {
+        const playerX = document.querySelector("#playerX");
+        const playerO = document.querySelector("#playerO");
+        playerX.textContent = nameForX; 
+        playerO.textContent = nameForO; 
+    }
+
     // method for displaying the latest entry of gameBoard array on click 
     const displayMark = (index) => {
         const cell = document.querySelector(`[data-index='${index}']`);
@@ -113,7 +120,7 @@ const DisplayController = (() => {
         button.addEventListener("click", method); 
     }
     
-    return { displayMark, getIndexNumber, addCellListener, addButtonListener }
+    return { displayNames, displayMark, getIndexNumber, addCellListener, addButtonListener }
 })();
 
 // Module to monitor all game flow 
@@ -141,6 +148,7 @@ const GameController = (() => {
         // Edge Case: When a player hit OK without input, assign "Anonymous"
         playerX = Player((nameForX.trim() === "") ? "Anonymous" : nameForX, "X");
         playerO = Player((nameForO.trim() === "") ? "Anonymous" : nameForO, "O");
+
     }
 
     const _getValidMove = (playerMark) => {
@@ -222,6 +230,7 @@ const GameController = (() => {
     }
 
     _resetGame();
+    DisplayController.displayNames(playerX.getName(), playerO.getName());
     DisplayController.addButtonListener(_reloadPage);
     DisplayController.addCellListener(_advanceGame);
  
