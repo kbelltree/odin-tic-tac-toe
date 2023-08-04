@@ -98,12 +98,20 @@ const DisplayController = (() => {
     // method for displaying the latest entry of gameBoard array on click 
     const displayMark = (index) => {
         const cell = document.querySelector(`[data-index='${index}']`);
-        cell.textContent = GameBoard.getMarkToDisplay(index);
+        const hiddenValue = cell.querySelector(".hidden-value");
+        hiddenValue.textContent = GameBoard.getMarkToDisplay(index);
     }
 
     // method for passing the index number the current player marked on click 
     const getIndexNumber = (e) => {
-        return e.target.dataset.index; 
+        return e.currentTarget.dataset.index; 
+    }
+
+    // method for adding svg imgs for X and O 
+    const addSVGBackground = (index) => {
+        const cell = document.querySelector(`[data-index='${index}']`);
+        const mark = GameBoard.getMarkToDisplay(index);
+        mark === "X" ? cell.classList.add("x") : cell.classList.add("o");
     }
 
     // method for adding eventListener that is attached to all .cell class
@@ -119,8 +127,10 @@ const DisplayController = (() => {
         const button = document.querySelector("#start-btn");
         button.addEventListener("click", method); 
     }
-    
-    return { displayNames, displayMark, getIndexNumber, addCellListener, addButtonListener }
+
+    // TODO: method for remove eventListener from cells after Game Over
+ 
+    return { displayNames, displayMark, getIndexNumber, addSVGBackground, addCellListener, addButtonListener }
 })();
 
 // Module to monitor all game flow 
@@ -181,7 +191,6 @@ const GameController = (() => {
 
     const _callGameOver = (playerName) => {
         if (isThereWinner) {
-        // TODO: add a method that shows replay button 
             alert(`${playerName} Win!`);
             console.log(`Winning Combo: ${GameBoard.getWinningCombination()}`); 
         } else if (!isThereWinner && GameBoard.isAllMarked()) {
@@ -222,11 +231,12 @@ const GameController = (() => {
         console.log(`result: ${moveResult}`);
         
         DisplayController.displayMark(indexNumber);
+        DisplayController.addSVGBackground(indexNumber);
         _updateGameStatus(moveResult);  
         _switchPlayerTurn();
 
         console.log(`game over? ${isThereWinner}`);
-        _callGameOver(playerName);     
+        _callGameOver(playerName);   
     }
 
     _resetGame();
