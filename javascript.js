@@ -129,8 +129,16 @@ const DisplayController = (() => {
     }
 
     // TODO: method for remove eventListener from cells after Game Over
+    const removeCellListener = (status, method) => {
+        const cells = document.querySelectorAll(".cell");
+        if (status) {
+            cells.forEach(cell => {
+                cell.removeEventListener("click", method);
+            })
+        }
+    }
  
-    return { displayNames, displayMark, getIndexNumber, addSVGBackground, addCellListener, addButtonListener }
+    return { displayNames, displayMark, getIndexNumber, addSVGBackground, addCellListener, addButtonListener, removeCellListener }
 })();
 
 // Module to monitor all game flow 
@@ -236,7 +244,8 @@ const GameController = (() => {
         _switchPlayerTurn();
 
         console.log(`game over? ${isThereWinner}`);
-        _callGameOver(playerName);   
+        _callGameOver(playerName);
+        DisplayController.removeCellListener(isThereWinner, _advanceGame);   
     }
 
     _resetGame();
