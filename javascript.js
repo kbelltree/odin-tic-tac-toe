@@ -88,6 +88,19 @@ const GameBoard = (() => {
 const DisplayController = (() => {
     "use strict";
 
+    const closeModal = (e) => {
+        e.preventDefault();
+        const modal = document.querySelector(".modal"); 
+        modal.style.display = "none"; 
+    }
+
+    const getPlayerName = (inputId) => {
+        const name = document.querySelector(`#${inputId}`).value;
+        console.log(`nameDOM: ${name}`);
+        // Edge Case: When a player hit enter without input, assign "Anonymous"
+        return name; 
+    }
+
     const displayNames = (nameForX, nameForO) => {
         const playerX = document.querySelector("#playerX");
         const playerO = document.querySelector("#playerO");
@@ -122,10 +135,15 @@ const DisplayController = (() => {
         });
     }
 
-    // method for adding eventListener to start/refresh button 
-    const addButtonListener = (method) => {
-        const button = document.querySelector("#start-btn");
+    // method for adding eventListener to buttons 
+    const addButtonListener = (buttonId, method) => {
+        const button = document.querySelector(`#${buttonId}`);
         button.addEventListener("click", method); 
+    }
+
+    const respondFormSubmit = (method) => {
+        const form = document.querySelector("#form");
+        form.addEventListener("submit", method);
     }
 
     // TODO: method for remove eventListener from cells after Game Over
@@ -138,7 +156,7 @@ const DisplayController = (() => {
         }
     }
  
-    return { displayNames, displayMark, getIndexNumber, addSVGBackground, addCellListener, addButtonListener, removeCellListener }
+    return { closeModal, getPlayerName, displayNames, displayMark, getIndexNumber, addSVGBackground, addCellListener, addButtonListener, respondFormSubmit, removeCellListener }
 })();
 
 // Module to monitor all game flow 
@@ -157,16 +175,17 @@ const GameController = (() => {
 
     // create a method that calls Player factory fn and assign each to playerX, playerO variables
     const _initializePlayers = () => {
-        const nameForX = prompt('Enter the name who goes first (X).');
-        const nameForO = prompt('Enter the name who goes second (O).');
+        // TODO: save the name for both from DOM after submission in place of prompt 
+        const nameX = DisplayController.getPlayerName("name-x");
+        const nameO = DisplayController.getPlayerName("name-o");
+
+        // Edge Case: if there is no entry add Anonymous
+        playerX = Player((nameX.trim() === "") ? "Anonymous" : nameX, "X");
+        playerO = Player((nameO.trim() === "") ? "Anonymous" : nameO, "O"); 
 
         // Edge Case: When Cancel button is clicked
-        if (nameForX === null || nameForO === null) return;
-
-        // Edge Case: When a player hit OK without input, assign "Anonymous"
-        playerX = Player((nameForX.trim() === "") ? "Anonymous" : nameForX, "X");
-        playerO = Player((nameForO.trim() === "") ? "Anonymous" : nameForO, "O");
-
+        // if (nameForX === null || nameForO === null) return;
+        
     }
 
     const _getValidMove = (playerMark) => {
@@ -220,6 +239,7 @@ const GameController = (() => {
         GameBoard.resetBoard();
         _clearPlayers(); 
         _initializePlayers();
+        DisplayController.displayNames(playerX.getName(), playerO.getName());
         currentPlayer = playerX;
         console.log("currentPlayer: " + currentPlayer);    
     }
@@ -247,10 +267,10 @@ const GameController = (() => {
         _callGameOver(playerName);
         DisplayController.removeCellListener(isThereWinner, _advanceGame);   
     }
-
-    _resetGame();
-    DisplayController.displayNames(playerX.getName(), playerO.getName());
-    DisplayController.addButtonListener(_reloadPage);
+　　
+    DisplayController.respondFormSubmit(DisplayController.closeModal);
+    DisplayController.respondFormSubmit(_resetGame);
+    DisplayController.addButtonListener("start-btn", _reloadPage);
     DisplayController.addCellListener(_advanceGame);
  
 })(); 
