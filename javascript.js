@@ -110,7 +110,7 @@ const DisplayController = (() => {
 
     // method for displaying the latest entry of gameBoard array on click 
     const displayMark = (index) => {
-        const cell = document.querySelector(`[data-index='${index}']`);
+        const cell = document.querySelector(`.cell[data-index='${index}']`);
         const hiddenValue = cell.querySelector(".hidden-value");
         hiddenValue.textContent = GameBoard.getMarkToDisplay(index);
     }
@@ -122,9 +122,17 @@ const DisplayController = (() => {
 
     // method for adding svg imgs for X and O 
     const addSVGBackground = (index) => {
-        const cell = document.querySelector(`[data-index='${index}']`);
+        const cell = document.querySelector(`.cell[data-index='${index}']`);
         const mark = GameBoard.getMarkToDisplay(index);
         mark === "X" ? cell.classList.add("x") : cell.classList.add("o");
+    }
+
+    const addHighLightColor = (indicesArray) => {
+        // take winning array = GameBoard.getWinningCombination()
+        indicesArray.forEach(index => {
+            const cell = document.querySelector(`.cell[data-index='${index}']`)
+            cell.classList.add("highlight");
+        })
     }
 
     const displayGameOverCall = (string) => {
@@ -161,7 +169,7 @@ const DisplayController = (() => {
         }
     }
  
-    return { closeFormModal, getPlayerName, displayNames, displayMark, getIndexNumber, addSVGBackground, displayGameOverCall, addCellListener, addButtonListener, respondFormSubmit, removeCellListener }
+    return { closeFormModal, getPlayerName, displayNames, displayMark, getIndexNumber, addSVGBackground, addHighLightColor, displayGameOverCall, addCellListener, addButtonListener, respondFormSubmit, removeCellListener }
 })();
 
 // Module to monitor all game flow 
@@ -224,7 +232,7 @@ const GameController = (() => {
     const _callGameOver = (playerName) => {
         if (isThereWinner) {
             DisplayController.displayGameOverCall(`${playerName} Win!`);
-            console.log(`Winning Combo: ${GameBoard.getWinningCombination()}`); 
+            DisplayController.addHighLightColor(GameBoard.getWinningCombination());
         } else if (!isThereWinner && GameBoard.isAllMarked()) {
             DisplayController.displayGameOverCall(`It's a Tie!`);
         }
