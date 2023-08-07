@@ -88,9 +88,9 @@ const GameBoard = (() => {
 const DisplayController = (() => {
     "use strict";
 
-    const closeModal = (e) => {
+    const closeFormModal = (e) => {
         e.preventDefault();
-        const modal = document.querySelector(".modal"); 
+        const modal = document.querySelector(".modal-start"); 
         modal.style.display = "none"; 
     }
 
@@ -127,6 +127,11 @@ const DisplayController = (() => {
         mark === "X" ? cell.classList.add("x") : cell.classList.add("o");
     }
 
+    const displayGameOverCall = (string) => {
+        const textBox = document.querySelector("#winner-call");
+        textBox.textContent = string; 
+    }
+
     // method for adding eventListener that is attached to all .cell class
     const addCellListener = (method) => {
         const cells = document.querySelectorAll(".cell");
@@ -156,7 +161,7 @@ const DisplayController = (() => {
         }
     }
  
-    return { closeModal, getPlayerName, displayNames, displayMark, getIndexNumber, addSVGBackground, addCellListener, addButtonListener, respondFormSubmit, removeCellListener }
+    return { closeFormModal, getPlayerName, displayNames, displayMark, getIndexNumber, addSVGBackground, displayGameOverCall, addCellListener, addButtonListener, respondFormSubmit, removeCellListener }
 })();
 
 // Module to monitor all game flow 
@@ -218,10 +223,10 @@ const GameController = (() => {
 
     const _callGameOver = (playerName) => {
         if (isThereWinner) {
-            alert(`${playerName} Win!`);
+            DisplayController.displayGameOverCall(`${playerName} Win!`);
             console.log(`Winning Combo: ${GameBoard.getWinningCombination()}`); 
         } else if (!isThereWinner && GameBoard.isAllMarked()) {
-            alert(`It's a Tie!`);
+            DisplayController.displayGameOverCall(`It's a Tie!`);
         }
     }
 
@@ -267,8 +272,8 @@ const GameController = (() => {
         _callGameOver(playerName);
         DisplayController.removeCellListener(isThereWinner, _advanceGame);   
     }
-　　
-    DisplayController.respondFormSubmit(DisplayController.closeModal);
+
+    DisplayController.respondFormSubmit(DisplayController.closeFormModal);
     DisplayController.respondFormSubmit(_resetGame);
     DisplayController.addButtonListener("start-btn", _reloadPage);
     DisplayController.addCellListener(_advanceGame);
