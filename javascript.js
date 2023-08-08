@@ -88,10 +88,18 @@ const GameBoard = (() => {
 const DisplayController = (() => {
     "use strict";
 
-    const closeFormModal = (e) => {
-        e.preventDefault();
+    const _closeFormModal = () => {
         const modal = document.querySelector(".modal-start"); 
         modal.style.display = "none"; 
+    }
+
+    const handleFormEntry = (e) => {
+        e.preventDefault();
+        _closeFormModal();
+    }
+    
+    const handleFormCancel = () => {
+        _closeFormModal();
     }
 
     const getPlayerName = (inputId) => {
@@ -169,7 +177,7 @@ const DisplayController = (() => {
         }
     }
  
-    return { closeFormModal, getPlayerName, displayNames, displayMark, getIndexNumber, addSVGBackground, addHighLightColor, displayGameOverCall, addCellListener, addButtonListener, respondFormSubmit, removeCellListener }
+    return { handleFormEntry, handleFormCancel, getPlayerName, displayNames, displayMark, getIndexNumber, addSVGBackground, addHighLightColor, displayGameOverCall, addCellListener, addButtonListener, respondFormSubmit, removeCellListener }
 })();
 
 // Module to monitor all game flow 
@@ -195,9 +203,6 @@ const GameController = (() => {
         // Edge Case: if there is no entry add Anonymous
         playerX = Player((nameX.trim() === "") ? "Anonymous" : nameX, "X");
         playerO = Player((nameO.trim() === "") ? "Anonymous" : nameO, "O"); 
-
-        // Edge Case: When Cancel button is clicked
-        // if (nameForX === null || nameForO === null) return;
         
     }
 
@@ -247,14 +252,14 @@ const GameController = (() => {
         playerO = undefined; 
     }
 
-    const _resetGame = () => {
+    const _resetGame = (e) => {
+        DisplayController.handleFormEntry(e);
         isThereWinner = false; 
         GameBoard.resetBoard();
         _clearPlayers(); 
         _initializePlayers();
         DisplayController.displayNames(playerX.getName(), playerO.getName());
         currentPlayer = playerX;
-        console.log("currentPlayer: " + currentPlayer);    
     }
 
     const _advanceGame = (e) => {
@@ -281,7 +286,7 @@ const GameController = (() => {
         DisplayController.removeCellListener(isThereWinner, _advanceGame);   
     }
 
-    DisplayController.respondFormSubmit(DisplayController.closeFormModal);
+    DisplayController.addButtonListener("cancel-btn", DisplayController.handleFormCancel);
     DisplayController.respondFormSubmit(_resetGame);
     DisplayController.addButtonListener("start-btn", _reloadPage);
     DisplayController.addCellListener(_advanceGame);
