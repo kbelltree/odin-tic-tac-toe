@@ -201,9 +201,8 @@ const GameController = (() => {
         const nameO = DisplayController.getPlayerName("name-o");
 
         // Edge Case: if there is no entry add Anonymous
-        playerX = Player((nameX.trim() === "") ? "Anonymous" : nameX, "X");
-        playerO = Player((nameO.trim() === "") ? "Anonymous" : nameO, "O"); 
-        
+        playerX = Player((nameX.trim() === "") ? "X" : nameX, "X");
+        playerO = Player((nameO.trim() === "") ? "O" : nameO, "O"); 
     }
 
     const _getValidMove = (playerMark) => {
