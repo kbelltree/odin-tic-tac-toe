@@ -1,11 +1,9 @@
-// Factory function for player's information 
 const Player = (name, mark) => {
     const getName = () => name; 
     const getMark = () => mark; 
     return { getName, getMark };
 }
 
-// Module that controls gameBoard status
 const GameBoard = (() => {
     "use strict";
 
@@ -41,14 +39,12 @@ const GameBoard = (() => {
         gameBoard[index] = playerMark;
     }
 
-    // loop through WINNING_INDEX_COMBINATIONS[array] over gameBoard array to see if there is match 
     const _isWinningMove = (playerMark) => {
     
         for(const combination of WINNING_INDEX_COMBINATIONS){
             if (gameBoard[combination[0]] === playerMark && 
                 gameBoard[combination[1]] === playerMark && 
                 gameBoard[combination[2]] === playerMark) {
-                   console.log("combo: " + gameBoard[combination[0]], gameBoard[combination[1]], gameBoard[combination[2]]);
                    winningCombination = combination;    
                    return true;        
             } 
@@ -82,9 +78,9 @@ const GameBoard = (() => {
     }
 
     return { resetBoard, makeMove, isAllMarked, getWinningCombination, getMarkToDisplay };
+
 })();
 
-// Module for UI 
 const DisplayController = (() => {
     "use strict";
 
@@ -104,8 +100,6 @@ const DisplayController = (() => {
 
     const getPlayerName = (inputId) => {
         const name = document.querySelector(`#${inputId}`).value;
-        console.log(`nameDOM: ${name}`);
-        // Edge Case: When a player hit enter without input, assign "Anonymous"
         return name; 
     }
 
@@ -123,12 +117,10 @@ const DisplayController = (() => {
         hiddenValue.textContent = GameBoard.getMarkToDisplay(index);
     }
 
-    // method for passing the index number the current player marked on click 
     const getIndexNumber = (e) => {
         return e.currentTarget.dataset.index; 
     }
 
-    // method for adding svg imgs for X and O 
     const addSVGBackground = (index) => {
         const cell = document.querySelector(`.cell[data-index='${index}']`);
         const mark = GameBoard.getMarkToDisplay(index);
@@ -136,7 +128,7 @@ const DisplayController = (() => {
     }
 
     const addHighLightColor = (indicesArray) => {
-        // take winning array = GameBoard.getWinningCombination()
+   
         indicesArray.forEach(index => {
             const cell = document.querySelector(`.cell[data-index='${index}']`)
             cell.classList.add("highlight");
@@ -148,7 +140,6 @@ const DisplayController = (() => {
         textBox.textContent = string; 
     }
 
-    // method for adding eventListener that is attached to all .cell class
     const addCellListener = (method) => {
         const cells = document.querySelectorAll(".cell");
         cells.forEach(cell => {
@@ -156,7 +147,6 @@ const DisplayController = (() => {
         });
     }
 
-    // method for adding eventListener to buttons 
     const addButtonListener = (buttonId, method) => {
         const button = document.querySelector(`#${buttonId}`);
         button.addEventListener("click", method); 
@@ -167,7 +157,6 @@ const DisplayController = (() => {
         form.addEventListener("submit", method);
     }
 
-    // TODO: method for remove eventListener from cells after Game Over
     const removeCellListener = (status, method) => {
         const cells = document.querySelectorAll(".cell");
         if (status) {
@@ -178,9 +167,9 @@ const DisplayController = (() => {
     }
  
     return { handleFormEntry, handleFormCancel, getPlayerName, displayNames, displayMark, getIndexNumber, addSVGBackground, addHighLightColor, displayGameOverCall, addCellListener, addButtonListener, respondFormSubmit, removeCellListener }
+
 })();
 
-// Module to monitor all game flow 
 const GameController = (() => {
     "use strict";
 
@@ -194,35 +183,12 @@ const GameController = (() => {
     // Variable for winner boolean 
     let isThereWinner; 
 
-    // create a method that calls Player factory fn and assign each to playerX, playerO variables
     const _initializePlayers = () => {
-        // TODO: save the name for both from DOM after submission in place of prompt 
         const nameX = DisplayController.getPlayerName("name-x");
         const nameO = DisplayController.getPlayerName("name-o");
 
-        // Edge Case: if there is no entry add Anonymous
         playerX = Player((nameX.trim() === "") ? "X" : nameX, "X");
         playerO = Player((nameO.trim() === "") ? "O" : nameO, "O"); 
-    }
-
-    const _getValidMove = (playerMark) => {
-        let result 
-        do { 
-            let cellChoice = prompt('enter cell number from 0 - 8');
-            if (cellChoice === null) {
-                alert (`Your Turn is Aborted.`);
-                break; 
-            }
-
-            result = GameBoard.makeMove(cellChoice, playerMark);
-
-            if (result === 0) {
-                alert(`The cell number is taken or out of range. Re-try with another cell number.`);
-            }
-           
-        } while (result === 0);
-        
-        return result; 
     }
 
     const _switchPlayerTurn = () => {
@@ -262,25 +228,15 @@ const GameController = (() => {
     }
 
     const _advanceGame = (e) => {
-        console.log(`Event: ${e}`);
         const playerMark = currentPlayer.getMark();
         const playerName = currentPlayer.getName();
         const indexNumber = parseInt(DisplayController.getIndexNumber(e), 10);
-
-        console.log(`Player Name: ${playerName} Mark: ${playerMark} `);
-
-        // const moveResult = _getValidMove(playerMark);
-
         const moveResult = GameBoard.makeMove(indexNumber, playerMark);
-       
-        console.log(`result: ${moveResult}`);
-        
+               
         DisplayController.displayMark(indexNumber);
         DisplayController.addSVGBackground(indexNumber);
         _updateGameStatus(moveResult);  
         _switchPlayerTurn();
-
-        console.log(`game over? ${isThereWinner}`);
         _callGameOver(playerName);
         DisplayController.removeCellListener(isThereWinner, _advanceGame);   
     }
@@ -292,7 +248,3 @@ const GameController = (() => {
  
 })(); 
 
-
-
-// GameController.resetGame();
-// GameController.advanceGame(gameController.getPlayer());
