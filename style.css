@@ -1,0 +1,260 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font: inherit;
+}
+
+:root {
+  --background-color: #FEF6B5;
+  --button-color: #18B9BB;
+  --highlight-color: rgb(246, 116, 238);
+  --modal-button-color: #8ab4f2;
+}
+
+/* ibm-plex-mono-700italic - latin */
+@font-face {
+  font-display: swap; 
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 700;
+  src: url('assets/fonts/ibm-plex-mono-v19-latin-700italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* ibm-plex-mono-500 - latin */
+@font-face {
+  font-display: swap; 
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  src: url('assets/fonts/ibm-plex-mono-v19-latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* ibm-plex-mono-700 - latin */
+@font-face {
+  font-display: swap; 
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: url('assets/fonts/ibm-plex-mono-v19-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'IBM Plex Mono', sans-serif;
+  font-weight: 500;
+  background-color: var(--background-color, LemonChiffon);  
+}  
+
+button {
+  font-family: 'IBM Plex Mono', sans-serif;
+  font-weight: 700;
+  height: 2.75rem; 
+  width: 14rem;
+  border-radius: 50px;
+  font-size: 1.25rem;
+  margin: auto; 
+  flex: 0 0 auto; 
+}
+
+#start-btn {
+  border: 2.5px solid black;
+  background-color: var(--button-color, LightSeaGreen);
+}
+
+#start-btn:hover, 
+#start-btn:active {
+  background-color: #1ee5e8;
+}
+
+#start-btn:active {
+  transform: scale(95%);
+}
+ 
+.flex-container {
+  width: max(25rem, 30%); 
+  display: flex;  
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: auto; 
+}
+
+.header {
+  display: flex;
+  flex-direction: column; 
+  justify-content: space-between;
+  align-items: center;
+  min-height: 25%; 
+}
+
+.header-top, 
+.header-bottom {
+  display: flex; 
+  flex-direction: row;
+  width: 100%;
+  align-items: center; 
+  text-align: center; 
+}
+
+.header-top > *, 
+.header-bottom > * {
+  width: calc(100%/3);
+}
+
+.header > div > img {
+  height: auto;
+  object-fit: cover;
+}
+
+#playerX, #playerO {
+  font-size: 1.5rem;
+  text-align: center;
+  text-transform: capitalize;
+  max-width: 95%; 
+  margin-top: -1rem; 
+  overflow: auto;
+}
+
+#winner-call {
+  font-style: italic;
+  font-size: 1.75rem;
+  font-weight: 700; 
+  text-transform: capitalize;
+  color: white;
+  overflow-wrap: break-word;
+  text-shadow: 1.5px 3px black;
+  padding: 0.5rem;
+  -webkit-text-stroke-width: 1.5px;
+  -webkit-text-stroke-color: black;
+  -webkit-text-fill-color: white; 
+}
+
+.grid-background {
+  background-color: black; 
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+}
+
+.grid-container {
+  border: solid 5px; 
+  width: 100%;
+  display: grid; 
+  gap: 5px; 
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.cell {
+  background-color: white; 
+  height: 0;
+  padding-bottom: 100%;
+}
+
+/* Dynamically add SVGs */
+.x {
+  background-image: url('assets/images/cross-min.svg');
+}
+
+.o {
+  background-image: url('assets/images/circle.svg'); 
+  }
+
+.x, 
+.o {
+  background-size: contain;  
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* hidden text for accessibility */
+.hidden-value {
+  color: transparent; 
+}
+
+.credit {
+  text-align: center; 
+  margin: 2.5rem; 
+  opacity: 60%;
+}
+
+.credit a {
+  color: #000000;
+}
+
+/* modals */
+.modal-start {
+  display: block; 
+  position: fixed;
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4); 
+}
+
+.name-input {
+  font-size: 1.25rem;
+  background-color: white;
+  margin: 15% auto;
+  padding: 2rem;
+  border: 1px solid #888;
+  width: max(25rem, 30%); 
+}
+
+.name-input form {
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem; 
+  
+}
+
+.name-input input {
+  margin-top: 0.5rem; 
+  padding: 0.5rem; 
+  width: 100%;
+}
+
+.name-input h2 {
+  font-size: 1.5rem; 
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+#form-btn {
+  justify-self: end;
+  background-color: var(--modal-button-color, CornflowerBlue);
+}
+
+#cancel-btn {
+  justify-self: start;
+  background-color: #bfbfbf;
+}
+
+#form-btn, 
+#cancel-btn {
+  width: 60%;
+  border: none; 
+  margin: 0;
+}
+
+#form-btn:hover, 
+#form-btn:active {
+  background-color: #b9d2f7;
+}
+
+#cancel-btn:hover, 
+#cancel-btn:active {
+  background-color: #dfdfdf;
+}
+
+#form-btn:active, 
+#cancel-btn:active {
+  transform: scale(95%);
+}
+
+.highlight {
+  background-color: var(--highlight-color, violet);
+}
