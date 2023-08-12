@@ -4,7 +4,7 @@
 <br>
   <div align="center">
     <a href="https://kbelltree.github.io/odin-tic-tac-toe">
-      <img src=".assets/images/odin-project-tic-tac-toe-keiko-s-2023.jpg" alt="tic-tac-toe-project-UI-snapshots-by-keiko-s-2023" width=50% height=50%>
+      <img src="assets/images/odin-project-tic-tac-toe-keiko-s-2023.jpg" alt="tic-tac-toe-project-UI-snapshots-by-keiko-s-2023" width=50% height=50%>
     </a>
   </div>
 <br>
